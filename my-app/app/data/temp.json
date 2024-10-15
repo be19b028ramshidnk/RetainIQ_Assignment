@@ -1,0 +1,17 @@
+{
+    "ProductFilters": [
+      {
+        "tagName": "Product Collection",
+        "tagStatus": false
+      },
+      {
+        "tagName": "contains",
+        "tagStatus": true
+      },
+      {
+        "tagName": "Anarkali Kurtas",
+        "tagStatus": false
+      }
+    ],
+    "Variants": ["img1", "img2"]
+  }
