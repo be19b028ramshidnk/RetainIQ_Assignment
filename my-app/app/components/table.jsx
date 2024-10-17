@@ -1,47 +1,45 @@
 "use client"
 import React, { useCallback, useState } from 'react';
-import { AddButton } from './dataPicker';
 import TableCell from './tableCell';
 import update from 'immutability-helper';
-import Image from 'next/image';
 import TableRow from './tableRow';
 import toast, { Toaster } from 'react-hot-toast';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
+import { BsThreeDotsVertical } from "react-icons/bs";
+
 
 const Table = () => {
-  // For managing the row state
-  const [states, setStates] = useState([{ id: 1, name: '1' }]);
 
-  // For managing the column state and initial value Primary Variant
+  const [states, setStates] = useState([{ id: 1, name: '1' }]);
   const [variants, setVariants] = useState([{ id: 1, name: 'Primary Variant' }]);
 
   // For adding a new row
   const addState = () => {
     const newState = { id: states.length + 1, name: `${states.length + 1}` };
     setStates([...states, newState]);
-    toast.success('Row added');
+    toast.success('State added');
   };
 
   // For removing a row
   const removeState = (id) => {
     setStates(states.filter(state => state.id !== id));
-    toast.error('Row removed');
+    toast.error('State removed');
   };
 
   // For adding a new column
   const addVariant = () => {
     const newVariant = { id: variants.length + 1, name: `Variant ${variants.length + 1}` };
     setVariants([...variants, newVariant]);
-    toast.success('Column added');
+    toast.success('Variant added');
   };
 
   // For removing a column
   const removeVariant = (id) => {
     setVariants(variants.filter(variant => variant.id !== id));
-    toast.error('Column removed');
+    toast.error('Variant removed');
   };
 
-  // moveRow for drag and drop
+  // For drag and drop
   const moveRow = useCallback((dragIndex, hoverIndex) => {
     setStates((prevStates) =>
       update(prevStates, {
@@ -73,7 +71,7 @@ const Table = () => {
                           <FaRegTrashAlt className='fill-red-600 cursor-pointer ml-10' />
                         </button>
                         <button >
-                          <Image src="/ColDelete.svg" alt="Remove" width={20} height={20} className='w-[20px] h-[20px]' />
+                          <BsThreeDotsVertical alt="Remove" width={20} height={20} className='w-[20px] h-[20px]' />
                         </button>
                       </div>
                     ))}
@@ -101,7 +99,9 @@ const Table = () => {
           <tfoot>
             <tr>
               <TableCell className="sticky-header left-0">
-                <AddButton onClick={addState} />
+              <button onClick={addState} className="flex m-4 p-2 bg-white rounded-lg shadow-md items-center">
+                <FaPlus className="inline" />
+              </button>
               </TableCell>
             </tr>
           </tfoot>
