@@ -10,7 +10,7 @@ export  function ContentCenter({ className, children }) {
     );
   }
 
-  export default function CollectionModal({
+  export default function ImageCollection({
     collectionData,
     setShowModal,
     onSelectProduct,
