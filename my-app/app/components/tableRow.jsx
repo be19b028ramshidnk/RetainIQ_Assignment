@@ -2,8 +2,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import TableCell from './tableCell';
+import TagModal from './tagPool';
 import { FaPlus, FaGripVertical } from "react-icons/fa6";
-import CollectionModal from "./dataPool";
+import ImageCollection from "./imagePool";
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 import { useDrag, useDrop } from 'react-dnd';
 
@@ -14,14 +15,19 @@ export const ItemTypes = {
 
 
 const TableRow = ({ state, variants, removeState, index, id, addVariant, moveRow }) => {
+  // For Image 
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState([]);
   const [collectionData, setCollectionData] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState({
-    row: null,
-    column: null,
-  });
+  const [selectedProduct, setSelectedProduct] = useState({row: null, column: null,});
 
+  // For Tags
+  const [dataTag, setDataTag] = useState(Array(3).fill({ tags: [] })); 
+  const [tags, setTags] = useState([]); // Stores fetched tags from tags.json
+  const [selectedTags, setSelectedTags] = useState({ row: null, tags: [] });
+  const [showTagModal, setShowTagModal] = useState(false);
+
+  // Fetching image data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,13 +42,13 @@ const TableRow = ({ state, variants, removeState, index, id, addVariant, moveRow
     fetchData();
   }, []);
 
-  // Function to handle product cell click and open modal
+  // Function to handle image cell click and open modal
   const handleProductClick = (rowIndex, variantIndex) => {
     setSelectedProduct({ row: rowIndex, column: variantIndex });
     setShowModal(true);
   };
 
-  // Function to update the selected product in the table
+  // Function to update the selected image in the table
   const updateProduct = (selectedVariant) => {
     const updatedData = [...data];
 
@@ -58,8 +64,53 @@ const TableRow = ({ state, variants, removeState, index, id, addVariant, moveRow
     }
 
     setData(updatedData);
-    setShowModal(false); // Close the modal after product selection
+    setShowModal(false); // Close the modal after image selection
   };
+
+
+  // Fetch the tags from the tags.json file
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await fetch('/tags.json');
+        const tags = await response.json();
+        setTags(tags);
+      } catch (error) {
+        console.log("Error fetching tags", error);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
+  // Function to handle tag selection
+  const handleTagClick = (rowIndex) => {
+    setSelectedTags({ row: rowIndex, tags: [] }); // Prepare to select tags for a specific row
+    setShowTagModal(true);
+  };
+
+  // Function to update selected tags in the table 
+  const updateTags = (selectedTagList) => {
+    const updatedTags = [...dataTag];
+
+    // Ensure that the row exists and has a 'tags' property
+    if (!updatedTags[selectedTags.row]) {
+      updatedTags[selectedTags.row] = {}; // Initialize row if undefined
+    }
+
+    // Create a new object for the tags to avoid reference issues
+    updatedTags[selectedTags.row] = {
+      ...updatedTags[selectedTags.row], // Keep other properties of the row if any
+      tags: selectedTagList // Update with new tags
+    };
+
+    setDataTag(updatedTags);
+    setShowTagModal(false);
+  };
+  
+  
+
+
 
   const ref = useRef(null);
   const [{ handlerId }, drop] = useDrop({
@@ -124,14 +175,37 @@ const TableRow = ({ state, variants, removeState, index, id, addVariant, moveRow
           </button>
         </div>
       </TableCell>
-      <TableCell className="sticky-header left-[96px] ">
-        <div className="flex-center gap-2 border-dashed border-TextGreyLight rounded-md cursor-pointer p-3 custom-shadow w-[300px] h-[160px] bg-white">
-          <button className="filterButton flex-center gap-3">
-            <FaPlus alt="Add" width={20} height={20} className='w-[20px] h-[20px]' />
-            <p className="text-TextGrey">Add Product Filter</p>
-          </button>
-        </div>
-      </TableCell>
+      <TableCell className="sticky-header left-[96px]">
+          <div className="flex-center gap-2 border-dashed border-TextGreyLight rounded-md cursor-pointer p-3 custom-shadow w-[300px] h-[160px] bg-white">
+              {/* Display selected tags in place of "Add Product Filter" */}
+              <div className="flex gap-2 flex-wrap flex-center">
+                  {Array.isArray(dataTag[state.id]?.tags) && dataTag[state.id].tags.length > 0 ? (
+                      dataTag[state.id].tags.map((tag, index) => (
+                          <div key={index} className="bg-gray-200 px-3 py-1 rounded-lg">
+                              {tag}
+                          </div>
+                          ))
+                      ) : (
+                          <p className="text-TextGrey filterButton flex-center gap-3">Add Product Filter</p>
+                    )}
+                </div>
+                <button
+                    className="filterButton flex-center gap-3"
+                    onClick={() => handleTagClick(state.id)} 
+                >
+                    <FaPlus alt="Add" width={20} height={20} className='w-[20px] h-[20px]' />
+                </button>
+            </div>
+            </TableCell>
+        {showTagModal && (
+            <TagModal
+                tagsData={tags}  
+                setShowModal={setShowTagModal}
+                onSelectTags={updateTags}
+            />
+        )}
+
+        {/* Display selected image in place of "Add Design" */}
       <TableCell colSpan={variants.length}>
         <div className="flex space-x-4 overflow-x-auto hidden-scrollbar">
           {variants.map((variant) => (
@@ -165,14 +239,15 @@ const TableRow = ({ state, variants, removeState, index, id, addVariant, moveRow
               </div>
             </div>
           ))}
-        </div>
         {showModal && (
-          <CollectionModal
+          <ImageCollection
             collectionData={collectionData}
             setShowModal={setShowModal}
             onSelectProduct={updateProduct}
           />
         )}
+        </div>
+
       </TableCell>
 
       <TableCell className="border-none">
