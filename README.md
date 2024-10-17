@@ -1,5 +1,5 @@
 # RetainIQ_Assignment
-CreateD a user interface (UI) as demonstrated in the assignment using NextJS.
+Created a user interface (UI) as demonstrated in the assignment using NextJS.
 
 ## Features
 
