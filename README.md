@@ -35,8 +35,9 @@ https://retain-iq-assignment-pink.vercel.app/
 
 ## Screenshots
 
-<img src='/my-app/public/images/image.png>
+![](/my-app/public/images/image.png)
 
-<img src='/my-app/public/images/image-1.png>
+![](/my-app/public/images/image-1.png)
 
-<img src='/my-app/public/images/image-2.png>
+![](/my-app/public/images/image-2.png)
+
