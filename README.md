@@ -1,5 +1,5 @@
 # RetainIQ_Assignment
-CreateD a user interface (UI) as demonstrated in the assignment using NextJS.
+Created a user interface (UI) as demonstrated in the assignment using NextJS.
 
 ## Features
 
@@ -26,6 +26,37 @@ Allow users to insert tags into a specific state row.
 * React DND Library
 * React Hot Toast ( Notification Purpose)
 * React immutability-helper (Mutate a copy of data without changing the original source)
+
+## Setup the project
+
+1. Clone the repository:
+   ```bash
+   https://github.com/be19b028ramshidnk/RetainIQ_Assignment.git
+   ```
+
+2.Navigate to the project directory:
+
+```bash
+
+cd my-app
+```
+Install requirements:
+
+```bash
+npm install
+npm i react-icons
+npm i react-dnd
+npm i react-dnd-html5-backend
+npm i immutability-helper
+npm i react-hot-toast
+
+```
+
+Run the Application
+
+```bash
+npm run dev
+```
 
 ## Deployment
 
